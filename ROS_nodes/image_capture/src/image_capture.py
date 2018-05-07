@@ -15,16 +15,20 @@ from matplotlib import pyplot as plt
 def main():
     rospy.init_node('Image_capture',anonymous=False)
     tmp = "/home/tgj/catkin_ws/src/ROV_lego_drove-/movies/first.mov"
-    cam = cv2.VideoCapture(tmp)
+    #tmp2 = cv2.imread("Selection_002.png")
+    cam = cv2.VideoCapture(-1)
     #cam = cv2.VideoCapture(0)
     ret , frame = cam.read()
-    #cv2.imshow('feed',frame)
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    #pub(gray)
+    cv2.imshow('feed',tmp)
+    #frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    pub(frame_gray)
 
 def pub(img):
+    bridge = CvBridge()
+    msg = bridge.cv2_to_imgmsg(img,encoding="8UC1")
     img_pub = rospy.Publisher('camera/raw',Image,queue_size=1)
-    img_pub.publish(img)
+    img_pub.publish(msg)
 
 if __name__ == '__main__':
     print('Starting node')

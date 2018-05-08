@@ -53,7 +53,7 @@ class  controller:
 		self.rollVal 
 		self.pitchVal 
 		self.yawVal 
-		self.myNode =  rospy.init_node('controller ', anonymous = False) 
+		
 		self.rosMsg =  rospy.Subscriber('cmd_msg_to_drone',Float64MultiArray,callback_TMP,queue_size=1) # Subscriber for data to calculate
 		
 
@@ -99,6 +99,7 @@ class  controller:
 
 
 if __name__ == '__main__':
+	rospy.init_node('controller ', anonymous = False) 
     control =  controller()
     
 	

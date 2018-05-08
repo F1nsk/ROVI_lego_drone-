@@ -3,7 +3,9 @@
 import rospy
 import sys
 import signal
-        
+
+# Ros msg libraries
+from std_msgs import Float64MultiArray
 
 
 
@@ -24,6 +26,8 @@ class uas_serial_controller:
         self.rudder = 50
         self.elevator = 50
         self.roll = 50
+        rospy.Subscriber('cmd_msg_to_serial',Float64MultiArray,queue_size=1)
+
     def initialize_serial(self):
         """ser = serial.Serial(
             port = '/dev/ttyUSB1',
@@ -37,11 +41,11 @@ class uas_serial_controller:
 
         input=1
 
+    def pub(self):
+        rospy.Publisher() ## TODO
+        print('msg send')
 
-    # Test section for serial com - WORKING
-    """while 1 : 
-        
-"""
+
     def read_keyboard(self):
         input = raw_input(">> ")
         myStr=str

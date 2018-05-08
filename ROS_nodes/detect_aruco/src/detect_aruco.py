@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # import ROS libraries
 import rospy
-
-
 # import ROS msg
+
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-from std_msgs.msg import Int32MultiArray
+from std_msgs import UInt32MultiArray
 # Import other libraries
 import cv2
 import numpy as np
@@ -14,6 +13,7 @@ import numpy as np
 import cv2.aruco as aruco
 import yaml
 import math
+
 
 # Initialize static content
 bridge = CvBridge()
@@ -80,10 +80,16 @@ def callback(img):
             myPubArray = Float64MultiArray(data=mydata)
             pub(myPubArray)
 
+<<<<<<< HEAD
 	
+=======
+    mydata = [1,1,2,3,3]
+    myPubArray = Float64MultiArray(data=mydata)
+    pub(myPubArray)
+>>>>>>> eae9ef0bc4eccd925fae02f45967cd91deebc2f4
 
 def pub(data):
-    aruco_pub = rospy.Publisher('ArUco/data_array', Int32MultiArray, queue_size=1)
+    aruco_pub = rospy.Publisher('ArUco/data_array', Float64MultiArray, queue_size=1)
     aruco_pub.publish(data)
 
 if __name__ == '__main__':

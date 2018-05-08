@@ -14,6 +14,7 @@ import signal
 from tf.transformations import quaternion_from_euler
 from tf.transformations import euler_from_quaternion
 from std_msgs.msg import Int16MultiArray
+from std_msgs.msg import Int32MultiArray
 from geometry_msgs.msg import Vector3
 import math
 import time
@@ -131,7 +132,14 @@ def land_drone(euler):
 
     current_pose.pose.position.z -= lower_height
     new_lower_pos = current_pose.pose.position.z
+def callback_TMP(data):
+    print('recieved data')
 
+
+def pub_cmd(data):
+    cmd_msg = rospy.Publisher('cmd_msg_to_drone', Int32MultiArray, queue_size=1) # publish the new commands in a cmd msg to
+    # the serial communication node.
+    cmd_msg.publish(data)
 
 def main():
     global last_request
@@ -146,6 +154,11 @@ def main():
     rospy.Subscriber("pixel_coord", Int16MultiArray, callback_vision, queue_size=1)
     rospy.Subscriber(mavros.get_topic('local_position', 'pose'), mavros.setpoint.PoseStamped, callback_drone,
                      queue_size=1)
+
+    rospy.Subscriber('ArUco/data_array',Int32MultiArray,callback_TMP,queue_size=1) # Subscriber for data to calculate
+    #postion, orientation etc for the drone.
+
+
 
     setpoint_local_pub = mavros.setpoint.get_pub_position_local(queue_size=10)
 

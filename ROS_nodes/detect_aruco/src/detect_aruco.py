@@ -23,7 +23,10 @@ Insert your image detection code in this function Anders, and publish in a Int32
 """
 def callback(img):
     print('recieved data')
-    # pub( my_array_for _publishing)
+
+    Int32MultiArray my_array_for_publishing[0]=1
+    
+    pub( my_array_for_publishing)
 
 def pub(data):
     aruco_pub = rospy.Publisher('ArUco/data_array', Int32MultiArray, queue_size=1)

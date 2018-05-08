@@ -10,13 +10,13 @@ from cv_bridge import CvBridge
 import cv2
 import numpy
 from matplotlib import pyplot as plt
-
+pathToCam = "/dev/video1"
 
 def main():
     rospy.init_node('Image_capture',anonymous=False)
     tmp = "/home/tgj/catkin_ws/src/ROV_lego_drove-/movies/first.mov"
     #tmp2 = cv2.imread("Selection_002.png")
-    cam = cv2.VideoCapture(-1)
+    cam = cv2.VideoCapture(pathToCam)
     #cam = cv2.VideoCapture(0)
     ret , frame = cam.read()
     cv2.imshow('feed',tmp)

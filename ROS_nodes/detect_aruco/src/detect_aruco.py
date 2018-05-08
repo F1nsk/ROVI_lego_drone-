@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # import ROS libraries
 import rospy
-
-
 # import ROS msg
+
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-from std_msgs.msg import Int32MultiArray
+from std_msgs import UInt32MultiArray
 # Import other libraries
 import cv2
 import numpy
+
 
 # Initialize static content
 bridge = CvBridge()
@@ -24,12 +24,12 @@ Insert your image detection code in this function Anders, and publish in a Int32
 def callback(img):
     print('recieved data')
 
-    Int32MultiArray my_array_for_publishing[0]=1
-    
-    pub( my_array_for_publishing)
+    mydata = [1,1,2,3,3]
+    myPubArray = Float64MultiArray(data=mydata)
+    pub(myPubArray)
 
 def pub(data):
-    aruco_pub = rospy.Publisher('ArUco/data_array', Int32MultiArray, queue_size=1)
+    aruco_pub = rospy.Publisher('ArUco/data_array', Float64MultiArray, queue_size=1)
     aruco_pub.publish(data)
 
 if __name__ == '__main__':

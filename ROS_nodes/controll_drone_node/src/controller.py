@@ -2,17 +2,6 @@
 
 # import ROS libraries
 import rospy
-import mavros
-from mavros.utils import *
-from mavros import setpoint as SP
-import mavros.setpoint
-import mavros.command
-import mavros_msgs.msg
-import mavros_msgs.srv
-import sys
-import signal
-from tf.transformations import quaternion_from_euler
-from tf.transformations import euler_from_quaternion
 from std_msgs.msg import Int16MultiArray
 from std_msgs.msg import Int32MultiArray
 from geometry_msgs.msg import Vector3
@@ -53,6 +42,12 @@ class  controller:
 		self.rollVal 
 		self.pitchVal 
 		self.yawVal 
+		self.dummy
+		self.xPos
+		self.yPos
+		self.rotOne
+		self.Two
+		self.valid
 		
 		self.rosMsg =  rospy.Subscriber('cmd_msg_to_drone',Float64MultiArray,callback_TMP,queue_size=1) # Subscriber for data to calculate
 		
@@ -64,7 +59,20 @@ class  controller:
 	    
 	def callback_TMP(data):
 		print('recieved data')
+		
+		dummy = data.data
+		
+		xPos = dummy[0]
+		yPos = dummy[1]
+		rotOne = dummy[2]
+		rotTwo = dummy[3]
+		valid   = dummy[4]
+		
+		
 
+
+	def postion() 
+		data 
 	
 	def callback_vision(topic):
 	

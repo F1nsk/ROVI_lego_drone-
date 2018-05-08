@@ -132,6 +132,23 @@ def land_drone(euler):
 
     current_pose.pose.position.z -= lower_height
     new_lower_pos = current_pose.pose.position.z
+    
+    
+def hover(euler) 
+	
+	print("hovering") 
+	current_pose.pose.position.x 
+    current_pose.pose.position.y
+	
+	
+def fly_straight(euler) 
+	
+	current_pose.pose.position.x  += distance_to_move
+	
+    
+    
+    
+    
 def callback_TMP(data):
     print('recieved data')
 
@@ -180,6 +197,7 @@ def main():
 
     pidHor = PID(0.004, 0.01, 0)
     pidVer = PID(0.006, .0001, 0)
+   
 
     may_land = False
 
@@ -200,6 +218,10 @@ def main():
             # Marker is too high or low
             if pixel_pos[1] < 380 or pixel_pos[1] > 420:
                 up_down_adjust_drone(pidVer, euler)
+                
+            # Marker is too far away 
+            
+          
 
         lower_dist = 350
         higher_dist = 450

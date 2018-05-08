@@ -45,6 +45,7 @@ global set_mode
 
 
 class  controller:
+	
 	""" Class doc """
 	
 	def __init__ (self):
@@ -60,9 +61,10 @@ class  controller:
 	
 
 
-	def state_callback(topic):
-	
-	
+	    
+	def callback_TMP(data):
+		print('recieved data')
+
 	
 	def callback_vision(topic):
 	
@@ -94,3 +96,9 @@ class  controller:
 	def recenter_y 
 
 		if  
+
+
+if __name__ == '__main__':
+    control =  controller()
+    
+	

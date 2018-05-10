@@ -48,7 +48,7 @@ class  controller:
 		self.xPosCentered 
 		self.yPosCentered 
 		self.rotOne
-		self.Two
+		self.rotTwo
 		self.valid
 		self.pidVer = PID(0.006, .0001, 0)
 		self.pidHor = PID(0.004, 0.01, 0)
@@ -94,21 +94,7 @@ class  controller:
 	def hover(self):
 		thrVal =   #find value 
 
-	def lower_thr(self): 
-		thrVal - 10 
-
-
-	def increase_thr(self):  
-		thrVal + 10 
-
-
-	def pan_left(self):  
-		rollVal - 10 
-
-
-	def pan_right(self):  
-		rollVal + 10 
-
+	
 
 	def recenter_y(self):  
 
@@ -120,6 +106,19 @@ class  controller:
 			hover() 
 			
 	def recenter_x(self): 
+		
+		if xPosCentered > 0
+			rollVal -= pid(xPosCentered) 
+		if xPosCentered < 0 
+			rollVal += pid(xPosCentered)  
+		else 
+			hover() 
+			
+	def rotate_drone(self):
+		
+		
+		
+		
 		
 			
 			

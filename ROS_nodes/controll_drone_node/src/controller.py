@@ -45,9 +45,15 @@ class  controller:
 		self.dummy
 		self.xPos
 		self.yPos
+		self.xPosCentered 
+		self.yPosCentered 
 		self.rotOne
 		self.Two
 		self.valid
+		self.pidVer = PID(0.006, .0001, 0)
+		self.pidHor = PID(0.004, 0.01, 0)
+  
+		
 		
 		self.rosMsg =  rospy.Subscriber('cmd_msg_to_drone',Float64MultiArray,callback_TMP,queue_size=1) # Subscriber for data to calculate
 		
@@ -57,53 +63,66 @@ class  controller:
 
 
 	    
-	def callback_TMP(data):
+	def callback_TMP(self.data):
 		print('recieved data')
 		
 		dummy = data.data
 		
 		xPos = dummy[0]
+		xPosCentered = xPos - 150 
 		yPos = dummy[1]
+		yPosCentered = yPos - 150
+		
 		rotOne = dummy[2]
 		rotTwo = dummy[3]
 		valid   = dummy[4]
 		
 		
+		
 
 
-	def postion() 
-		data 
+
 	
-	def callback_vision(topic):
-	
-	
+	def callback_vision(self):
 	
 	
 	
-	def get_drone_position(ros msg) 
-
-
-
-
-	def lower_thr
 	
+	
+	def get_drone_position(self):  
+		
+	def hover(self):
+		thrVal =   #find value 
+
+	def lower_thr(self): 
+		thrVal - 10 
 
 
-	def increase_thr 
+	def increase_thr(self):  
+		thrVal + 10 
 
 
-
-	def pan_left 
-
-
-
-	def pan_right 
+	def pan_left(self):  
+		rollVal - 10 
 
 
+	def pan_right(self):  
+		rollVal + 10 
 
-	def recenter_y 
 
-		if  
+	def recenter_y(self):  
+
+		if  yPosCentered > 0 
+			thrVal -= pid(yPosCentered) 
+		if 	yPoscentered < 0 
+			thrVal += pid(yPosCentered)
+		else 
+			hover() 
+			
+	def recenter_x(self): 
+		
+			
+			
 
 
 if __name__ == '__main__':

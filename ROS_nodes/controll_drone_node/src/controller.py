@@ -60,8 +60,15 @@ class  controller:
 
 	
 	
+	def init_drone_parameters(self):  # needs values 
+		
+		thrVal = 770
+		rollVal = 500
+		pitchVal = 500
+		yawVal =  370
 
-
+	
+		
 	    
 	def callback_TMP(self.data):
 		print('recieved data')
@@ -92,7 +99,12 @@ class  controller:
 	def get_drone_position(self):  
 		
 	def hover(self):
-		thrVal =   #find value 
+		
+		thrVal = 770
+		rollVal = 500
+		pitchVal = 500
+		yawVal =  370
+
 
 	
 

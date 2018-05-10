@@ -10,6 +10,7 @@ from cv_bridge import CvBridge
 import cv2
 import numpy
 from matplotlib import pyplot as plt
+<<<<<<< HEAD
 pathToCam = "/dev/video1"
 
 def main():
@@ -23,6 +24,33 @@ def main():
     #frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     pub(frame_gray)
+=======
+
+pathToCam = "/dev/video0"
+VERBOSE = True
+#tmp ='/home/finsk/catkin_ws/src/ROVI_lego_drone-/movies/first.mov'
+#cap = cv2.VideoCapture(tmp)
+
+def main():
+    rospy.init_node('Image_capture',anonymous=False)
+    #cam = cv2.VideoCapture(tmp)
+    cam = cv2.VideoCapture(pathToCam)
+    
+    while True :
+        ret, frame = cam.read()
+        
+        frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        pub(frame_gray)
+        if VERBOSE == True:    
+            cv2.imshow('feed',frame)
+            cv2.waitKey(1)
+            
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break 
+        
+    cam.release()
+    cv2.destroyAllWindows()
+>>>>>>> master
 
 def pub(img):
     bridge = CvBridge()
@@ -33,7 +61,9 @@ def pub(img):
 if __name__ == '__main__':
     print('Starting node')
     main()
+    
     try:
         rospy.spin()
     except KeyboardInterrupt:
         print("Shutting down")
+

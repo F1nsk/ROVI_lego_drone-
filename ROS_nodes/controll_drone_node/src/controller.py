@@ -45,10 +45,10 @@ class  controller:
 		self.dummy
 		self.xPos
 		self.yPos
-		self.xPosCentered 
-		self.yPosCentered 
-		self.rotOne
-		self.rotTwo
+		self.xPosCentered # centered to be in the center of the picture 
+		self.yPosCentered # dito 
+		self.rotOne # rotation around z axsis 
+		self.rotTwo # ratation around y axsis 
 		self.valid
 		self.pidVer = PID(0.006, .0001, 0)
 		self.pidHor = PID(0.004, 0.01, 0)
@@ -60,8 +60,15 @@ class  controller:
 
 	
 	
+	def init_drone_parameters(self):  # needs values 
+		
+		thrVal = 770
+		rollVal = 500
+		pitchVal = 500
+		yawVal =  370
 
-
+	
+		
 	    
 	def callback_TMP(self.data):
 		print('recieved data')
@@ -92,7 +99,12 @@ class  controller:
 	def get_drone_position(self):  
 		
 	def hover(self):
-		thrVal =   #find value 
+		
+		thrVal = 770
+		rollVal = 500
+		pitchVal = 500
+		yawVal =  370
+
 
 	
 
@@ -116,8 +128,26 @@ class  controller:
 			
 	def rotate_drone(self):
 		
+		if rotTwo > 0 
+			yawVal  += pid(rotOne) 
+			rollVal -= pid(rotOne) 
+		if rotTwo < 0 
+			yawVal += pid(rotOne) 
+			rollVal -= pid(rotOne) 
+		else hover()
+			
 		
 		
+	
+	def change_dist_to_marker(self):
+		
+		if rotOne > 0 
+			pitchVal += pid(rotOne)
+		if rotone < 0 
+			pitchVal += pid(rotOne)
+		else 
+			hover() 
+			
 		
 		
 			

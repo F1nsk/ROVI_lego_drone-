@@ -61,9 +61,8 @@ def pub(img):
 if __name__ == '__main__':
     print('Starting node')
     main()
-    
-    try:
-        rospy.spin()
-    except KeyboardInterrupt:
-        print("Shutting down")
+try:
+    rospy.spin()
+except KeyboardInterrupt:
+    print("Shutting down")
 

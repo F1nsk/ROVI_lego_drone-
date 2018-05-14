@@ -6,6 +6,7 @@ import signal
 
 # Ros msg libraries
 from std_msgs.msg import Float64MultiArray
+from std_msgs.msg import String
 
 
 
@@ -17,7 +18,7 @@ class uas_serial_controller:
     def __init__(self):
         self.myStr = str
         self.ser = serial.Serial(
-            #port='/dev/ttyUSB0',
+            port='/dev/ttyUSB0',
             baudrate=115200,
             parity=serial.PARITY_ODD,
             stopbits=serial.STOPBITS_TWO,
@@ -25,6 +26,7 @@ class uas_serial_controller:
         )
         rospy.init_node('Serial_com_node',anonymous=False)
         rospy.Subscriber('cmd_msg_to_serial',Float64MultiArray,self.callback,queue_size=1)
+	self.initialize_serial()
 
     def callback(self,data):
         print('recieved msg')
@@ -61,7 +63,7 @@ class uas_serial_controller:
         self.myStr += pitch
 
         self.ser.write(self.myStr)
-        """"""
+        
         out = ''
 
         time.sleep(1)  # Give the client some time to repons
@@ -72,6 +74,7 @@ class uas_serial_controller:
         # Print put what was entered in the terminal
         if out != '':
             print(">>" + out)
+	
 
 
     def initialize_serial(self):
@@ -89,8 +92,8 @@ class uas_serial_controller:
 
 if __name__ == '__main__':
     usc = uas_serial_controller()
-    array = [1.1,2.2,3.3,4.4,5.5]
-    usc.make_string(array)
+    #array = [1.1,2.2,3.3,4.4,5.5]
+    #susc.make_string(array)
     try:
         rospy.spin()
     except KeyboardInterrupt:

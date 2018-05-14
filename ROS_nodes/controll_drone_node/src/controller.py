@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # import ROS libraries
 import rospy
 from std_msgs.msg import Float64MultiArray
@@ -7,7 +7,7 @@ import math
 import time
 from pid_controller.pid import PID
 
-class  controller:
+class  Controller:
 
     """ Class doc """
 
@@ -31,7 +31,7 @@ class  controller:
 
 
 
-        self.rosMsg =  rospy.Subscriber('cmd_msg_to_drone' ,Float64MultiArray , self.callback_TMP ,queue_size=1) # Subscriber for data to calculate
+        self.rosMsg =  rospy.Subscriber('ArUco/data_array' ,Float64MultiArray , self.callback_TMP ,queue_size=1) # Subscriber for data to calculate
 
 
 
@@ -69,7 +69,7 @@ class  controller:
         my_array_for_publishing = Float64MultiArray(data=array)
         self.pub(my_array_for_publishing)
 
-    def pup(self, array):
+    def pub(self, array):
         img_pub = rospy.Publisher("cmd_msg_to_serial", Float64MultiArray ,queue_size=1)
         img_pub.publish(array)
 
@@ -78,8 +78,6 @@ class  controller:
         self.rollVal = 500
         self.pitchVal = 500
         self.yawVal =  370
-
-
 
 
     def recenter_y(self):
@@ -128,8 +126,8 @@ class  controller:
 
 
 if __name__ == '__main__':
-    rospy.init_node('controller ', anonymous = False)
-    control =  controller()
+    rospy.init_node('control_node', anonymous = False)
+    control =  Controller()
     control.init_drone_parameters()
     try:
         rospy.spin()

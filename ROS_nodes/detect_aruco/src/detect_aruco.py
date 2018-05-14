@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # import ROS libraries
 import rospy
-# import ROS msg
 
+
+# import ROS msg
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-from std_msgs import UInt32MultiArray
+from std_msgs.msg import Float64MultiArray
 # Import other libraries
 import cv2
 import numpy as np
@@ -14,9 +15,9 @@ import cv2.aruco as aruco
 import yaml
 import math
 
-
 # Initialize static content
 bridge = CvBridge()
+
 
 # https://www.learnopencv.com/rotation-matrix-to-euler-angles/
 def rotationMatrixToEulerAngles(R):
@@ -41,7 +42,7 @@ def main():
     img_sub = rospy.Subscriber('camera/raw',Image,callback,queue_size=1)
 
 """
-Insert your image detection code in this function Anders, and publish in a Int32MultiArray type
+Publish in a Int32MultiArray type
 """
 def callback(img):
     print('Recieved data')
@@ -51,8 +52,10 @@ def callback(img):
         camera_matrix = np.asarray(loadeddict.get("camera_matrix"))
         dist_coeffs = np.asarray(loadeddict.get("dist_coeff"))
 
-    aruco_dict = aruco.Dictionary_get(aruco.DICT_6X6_1000)
+    aruco_dict = aruco.Dictionary_get(aruco.DICT_4X4_50)
     parameters = aruco.DetectorParameters_create()
+
+    img = bridge.imgmsg_to_cv2(img)
 
     corners, ids, rejectedImgPoints = aruco.detectMarkers(img, aruco_dict, parameters=parameters)
 
@@ -63,9 +66,12 @@ def callback(img):
         accepted = 1
         rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners, 1000, camera_matrix, dist_coeffs)
 
-
         for i in range (len(rvec)):
-            # gray = aruco.drawAxis(gray, camera_matrix, dist_coeffs, rvec[i], tvec[i], 200)
+            print("Found marker!")
+            showImg = aruco.drawAxis(img, camera_matrix, dist_coeffs, rvec[i], tvec[i], 200)
+            cv2.imshow("Hello", showImg)
+            cv2.waitKey(1)
+
 
             r = cv2.Rodrigues(rvec[i])
             angles = rotationMatrixToEulerAngles(r[0])
@@ -74,23 +80,17 @@ def callback(img):
             rotation1 = angles[2]
             rotation2 = angles[1]
             mid = (corners[0][0][0] + corners[0][0][2]) / 2
-            dist = tvec[i][2]
+            dist = tvec[0][i][2]
 
             mydata = [mid[0], mid[1], rotation1, rotation2, dist, accepted]
             myPubArray = Float64MultiArray(data=mydata)
             pub(myPubArray)
-"""
-<<<<<<< HEAD
-	
-=======
-    mydata = [1,1,2,3,3]
-    myPubArray = Float64MultiArray(data=mydata)
-    pub(myPubArray)
->>>>>>> eae9ef0bc4eccd925fae02f45967cd91deebc2f4
-"""
+
+
 def pub(data):
     aruco_pub = rospy.Publisher('ArUco/data_array', Float64MultiArray, queue_size=1)
     aruco_pub.publish(data)
+
 
 if __name__ == '__main__':
     print("Starting node")
@@ -99,7 +99,3 @@ if __name__ == '__main__':
         rospy.spin()
     except KeyboardInterrupt:
         print('shutting down')
-
-
-
-

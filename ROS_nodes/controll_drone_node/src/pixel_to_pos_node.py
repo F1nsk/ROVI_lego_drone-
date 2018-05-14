@@ -15,6 +15,7 @@ from tf.transformations import quaternion_from_euler
 from tf.transformations import euler_from_quaternion
 from std_msgs.msg import Int16MultiArray
 from std_msgs.msg import Int32MultiArray
+from std_msgs.msg import Float64MultiArray
 from geometry_msgs.msg import Vector3
 import math
 import time
@@ -134,14 +135,13 @@ def land_drone(euler):
     new_lower_pos = current_pose.pose.position.z
     
     
-def hover(euler) 
-	
+def hover(euler): 
 	print("hovering") 
 	current_pose.pose.position.x 
-    current_pose.pose.position.y
+	current_pose.pose.position.y
 	
 	
-def fly_straight(euler) 
+def fly_straight(euler): 
 	
 	current_pose.pose.position.x  += distance_to_move
 	

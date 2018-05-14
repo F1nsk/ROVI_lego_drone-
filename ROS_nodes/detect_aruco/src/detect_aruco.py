@@ -79,7 +79,7 @@ def callback(img):
             mydata = [mid[0], mid[1], rotation1, rotation2, dist, accepted]
             myPubArray = Float64MultiArray(data=mydata)
             pub(myPubArray)
-
+"""
 <<<<<<< HEAD
 	
 =======
@@ -87,7 +87,7 @@ def callback(img):
     myPubArray = Float64MultiArray(data=mydata)
     pub(myPubArray)
 >>>>>>> eae9ef0bc4eccd925fae02f45967cd91deebc2f4
-
+"""
 def pub(data):
     aruco_pub = rospy.Publisher('ArUco/data_array', Float64MultiArray, queue_size=1)
     aruco_pub.publish(data)

@@ -72,7 +72,11 @@ class  controller:
 	    
 	def callback_TMP(self.data):
 		print('recieved data')
-		
+		self.recenter_x()
+		self.recenter_y()
+		self.rotate_drone()
+		self.change_dist_to_marker()
+
 		dummy = data.data
 		
 		xPos = dummy[0]
@@ -85,19 +89,14 @@ class  controller:
 		valid   = dummy[4]
 		
 		
-		
+		array = [self.thrVal,self.yawVal,self.rollVal,self.pitchVal]
+    	my_array_for_publishing = Float32MultiArray(data=array)
+    	pub(my_array_for_publishing)
 
+	def pup(array):
+		img_pub = rospy.Publisher("cmd_msg_to_serial", Float32MultiArray,queue_size=1)
+    	img_pub.publish(data)
 
-
-	
-	def callback_vision(self):
-	
-	
-	
-	
-	
-	def get_drone_position(self):  
-		
 	def hover(self):
 		
 		thrVal = 770
@@ -149,13 +148,13 @@ class  controller:
 			hover() 
 			
 		
-		
-			
-			
+					
 
 
 if __name__ == '__main__':
 	rospy.init_node('controller ', anonymous = False) 
     control =  controller()
+	self.init_drone_parameters()
+
     
 	

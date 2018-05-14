@@ -26,6 +26,8 @@ class  controller:
         self.valid = False
         self.pidVer = PID(0.006, .0001, 0)
         self.pidHor = PID(0.004, 0.01, 0)
+        self.pidDist = PID(0.006, .0001, 0) 
+        self.pidRot = PID(0.006,0.001, 0) 
 
 
 
@@ -83,29 +85,29 @@ class  controller:
     def recenter_y(self):
 
         if  self.yPosCentered > 0:
-            self.thrVal -= pid(self.yPosCentered)
+            self.thrVal -= self.pidVer(self.yPosCentered)
         if 	self.yPosCentered < 0:
-            self.thrVal += pid(self.yPosCentered)
+            self.thrVal += self.pidVer(self.yPosCentered)
         else:
             self.hover()
 
     def recenter_x(self):
 
         if self.xPosCentered > 0:
-            self.rollVal -= pid(self.xPosCentered)
+            self.rollVal -= self.pidHor(self.xPosCentered)
         if self.xPosCentered < 0:
-            self.rollVal += pid(self.xPosCentered)
+            self.rollVal += self.pidHor(self.xPosCentered)
         else:
             self.hover()
 
     def rotate_drone(self):
 
         if self.rotTwo > 0:
-            self.yawVal  += pid(self.rotOne)
-            self.rollVal -= pid(self.rotOne)
+            self.yawVal  += self.pidRot(self.rotOne)
+            self.rollVal -= self.pidRot(self.rotOne)
         if self.rotTwo < 0:
-            self.yawVal += pid(self.rotOne)
-            self.rollVal -= pid(self.rotOne)
+            self.yawVal += self.pidRot(self.rotOne)
+            self.rollVal -= self.pidRot(self.rotOne)
         else:
             self.hover()
 
@@ -115,9 +117,9 @@ class  controller:
     def change_dist_to_marker(self):
 
         if self.rotOne > 0:
-            self.pitchVal += pid(self.rotOne)
+            self.pitchVal += self.pidDist(self.rotOne)
         if self.rotOne < 0:
-            self.pitchVal += pid(self.rotOne)
+            self.pitchVal += self.pidDist(self.rotOne)
         else:
             self.hover()
 

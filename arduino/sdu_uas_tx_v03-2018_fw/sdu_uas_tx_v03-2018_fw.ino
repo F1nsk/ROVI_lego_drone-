@@ -402,7 +402,7 @@ long throttleVal = firstValue.toInt();
 if( throttleVal > 0  )
 {
   ppm[0]  = throttleVal; 
-}
+} 
 else 
 {
   throttleVal = ppm[0];

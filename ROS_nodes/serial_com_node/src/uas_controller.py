@@ -27,17 +27,28 @@ class uas_serial_controller:
         rospy.init_node('Serial_com_node',anonymous=False)
         rospy.Subscriber('cmd_msg_to_serial',Float64MultiArray,self.callback,queue_size=1)
 	self.initialize_serial()
+	self.arm_seq = "0:1100:0:0"
+	self.arm_flag = False
 
     def callback(self,data):
         print('recieved msg')
         myData = data.data
-        self.initialize_serial()
-        self.make_string(myData)
-        self.pub(myData)
+        if self.arm_flag == False:
+            self.arm_device()
+        
+        if self.arm_flag == True:
+            self.initialize_serial()
+            self.make_string(myData)
+            self.pub(myData)
 
+    def arm_device(self):
+        m_input = raw_input(">> ")
+        if m_input == ("arm"):
+            self.arm_flag=True
+        
+        
 
     def make_string(self, array):
-
         #myStr = str
         intList = [0,0,0,0,0]
         end = len(array)
@@ -66,7 +77,7 @@ class uas_serial_controller:
         
         out = ''
 
-        time.sleep(1)  # Give the client some time to repons
+        time.sleep(0.1)  # Give the client some time to repons
 
         while self.ser.inWaiting() > 0:
             out += self.ser.read(1)
@@ -75,7 +86,8 @@ class uas_serial_controller:
         if out != '':
             print(">>" + out)
 	
-
+    def writeOut(self,string):
+        self.ser.write(string)
 
     def initialize_serial(self):
         self.ser.isOpen()
@@ -91,7 +103,13 @@ class uas_serial_controller:
 
 
 if __name__ == '__main__':
+    #arm_seq = "0:1100:0:0"
     usc = uas_serial_controller()
+    #m_input = raw_input(">> ")
+    #if m_input == ("arm"):
+     #   usc.initialize_serial()
+      #  usc.writeOut(arm_seq)
+            
     #array = [1.1,2.2,3.3,4.4,5.5]
     #susc.make_string(array)
     try:

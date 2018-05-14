@@ -11,7 +11,7 @@ import cv2
 import numpy
 from matplotlib import pyplot as plt
 
-pathToCam = "/dev/video0"
+pathToCam = "/dev/video1"
 VERBOSE = True
 #tmp ='/home/finsk/catkin_ws/src/ROVI_lego_drone-/movies/first.mov'
 #cap = cv2.VideoCapture(tmp)
@@ -26,8 +26,10 @@ def main():
         
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         pub(frame_gray)
+        height, width = frame_gray.shape[:2]
+        print('(H,W)',height,width)
         if VERBOSE == True:    
-            cv2.imshow('feed',frame)
+          #  cv2.imshow('feed',frame)
             cv2.waitKey(1)
             
         if cv2.waitKey(1) & 0xFF == ord('q'):

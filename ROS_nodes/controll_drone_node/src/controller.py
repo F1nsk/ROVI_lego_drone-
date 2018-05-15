@@ -36,12 +36,12 @@ class  Controller:
 
 
 
-    def init_drone_parameters(self):  # needs values
+    def init_drone_parameters(self):  # initiates the values, we are using raw ppm values 
 
-        self.thrVal = 770
-        self.rollVal = 500
-        self.pitchVal = 500
-        self.yawVal =  370
+        self.thrVal = 1170 #lowest  values we can send 
+        self.rollVal = 1500 # middel point 
+        self.pitchVal = 1500 # dito 
+        self.yawVal =  1500 #dito 
 
 
 

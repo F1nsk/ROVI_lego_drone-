@@ -24,9 +24,13 @@ class  Controller:
         self.rotOne = 0 # rotation around z axsis
         self.rotTwo = 0 # ratation around y axsis
         self.valid = False
-        self.pidVer = PID(0.006, .0001, 0)
-        self.pidHor = PID(0.004, 0.01, 0)
-        self.pidDist = PID(0.006, .0001, 0) 
+        self.yImageOffset = 240
+        self.xImageOffset = 320
+        self.pidVer = PID(0.0006, 0.001, 0)
+        self.pidHor = PID(0.004, 0.0001, 0)
+        
+        self.pidDist = PID(0.006, 0.0001, 0) 
+        
         self.pidRot = PID(0.006,0.001, 0) 
 
 
@@ -36,36 +40,51 @@ class  Controller:
 
 
 
+<<<<<<< HEAD
     def init_drone_parameters(self):  # initiates the values, we are using raw ppm values 
 
         self.thrVal = 1170 #lowest  values we can send 
         self.rollVal = 1500 # middel point 
         self.pitchVal = 1500 # dito 
         self.yawVal =  1500 #dito 
+=======
+    def init_drone_parameters(self):  # needs values
+        print('init')
+        self.thrVal = 200
+        self.rollVal = 500
+        self.pitchVal = 500
+        self.yawVal =  370
+>>>>>>> e0d5b6f46ca9b5dd3611b22c95c490cbb7a4bc21
 
 
 
 
     def callback_TMP(self, data):
-        print('recieved data')
-        self.recenter_x()
+        #print('recieved data')
+        #self.recenter_x()
         self.recenter_y()
-        self.rotate_drone()
-        self.change_dist_to_marker()
+        
+        #self.rotate_drone()
+        
+        #self.change_dist_to_marker()
 
         self.dummy = data.data
 
         self.xPos = self.dummy[0]
-        self.xPosCentered = self.xPos - 150
+        self.xPosCentered = self.xPos - self.xImageOffset
         self.yPos = self.dummy[1]
-        self.yPosCentered = self.yPos - 150
+        self.yPosCentered = self.yPos - self.yImageOffset
 
         self.rotOne = self.dummy[2]
         self.rotTwo = self.dummy[3]
-        self.valid = self.dummy[4]
+        self.valid = self.dummy[5]
 
-
+        print('xPos', self.xPosCentered)
+        print('yPos', self.yPosCentered)
+        
         array = [self.thrVal ,self.yawVal ,self.rollVal ,self.pitchVal]
+        print(array)
+        
         my_array_for_publishing = Float64MultiArray(data=array)
         self.pub(my_array_for_publishing)
 
@@ -82,21 +101,23 @@ class  Controller:
 
     def recenter_y(self):
 
-        if  self.yPosCentered > 0:
-            self.thrVal -= self.pidVer(self.yPosCentered)
-        if 	self.yPosCentered < 0:
+        if  self.yPosCentered < 0:
+            print('below 0')
             self.thrVal += self.pidVer(self.yPosCentered)
-        else:
-            self.hover()
+        if 	self.yPosCentered > 0:
+            print('above 0')
+            self.thrVal += self.pidVer(self.yPosCentered)
+       
 
     def recenter_x(self):
 
-        if self.xPosCentered > 0:
-            self.rollVal -= self.pidHor(self.xPosCentered)
         if self.xPosCentered < 0:
+            print('below 0')
             self.rollVal += self.pidHor(self.xPosCentered)
-        else:
-            self.hover()
+        if self.xPosCentered > 0:
+            print('above 0')
+            self.rollVal += self.pidHor(self.xPosCentered)
+        
 
     def rotate_drone(self):
 
@@ -106,11 +127,7 @@ class  Controller:
         if self.rotTwo < 0:
             self.yawVal += self.pidRot(self.rotOne)
             self.rollVal -= self.pidRot(self.rotOne)
-        else:
-            self.hover()
-
-
-
+        
 
     def change_dist_to_marker(self):
 
@@ -118,8 +135,7 @@ class  Controller:
             self.pitchVal += self.pidDist(self.rotOne)
         if self.rotOne < 0:
             self.pitchVal += self.pidDist(self.rotOne)
-        else:
-            self.hover()
+        
 
 
 

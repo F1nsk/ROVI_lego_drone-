@@ -24,16 +24,18 @@ class uas_serial_controller:
             stopbits=serial.STOPBITS_TWO,
             bytesize=serial.SEVENBITS
         )
+        self.initialize_serial()
+        self.arm_seq = "0000110000000000"
+        self.arm_flag = False
+
         rospy.init_node('Serial_com_node',anonymous=False)
         rospy.Subscriber('cmd_msg_to_serial',Float64MultiArray,self.callback,queue_size=1)
-	self.initialize_serial()
-	self.arm_seq = "0:1100:0:0"
-	self.arm_flag = False
-
+	    
     def callback(self,data):
         print('recieved msg')
         myData = data.data
         if self.arm_flag == False:
+            print('False flag')
             self.arm_device()
         
         if self.arm_flag == True:
@@ -44,6 +46,8 @@ class uas_serial_controller:
     def arm_device(self):
         m_input = raw_input(">> ")
         if m_input == ("arm"):
+            self.initialize_serial()
+            self.writeOut(self.arm_seq)
             self.arm_flag=True
         
         
@@ -66,11 +70,11 @@ class uas_serial_controller:
         # prepare one string for sending
 
         self.myStr = throttle
-        self.myStr += delim
+        #self.myStr += delim
         self.myStr += rudder
-        self.myStr += delim
+        #self.myStr += delim
         self.myStr += roll
-        self.myStr += delim
+        #self.myStr += delim
         self.myStr += pitch
 
         self.ser.write(self.myStr)
@@ -98,20 +102,42 @@ class uas_serial_controller:
         myPub = rospy.Publisher('Echo_cmds',String,queue_size=1)
         myPub.publish(msg)
 
+    def testConnection(self):
+        out = ''
+        m_input = raw_input(">> ")
+        if m_input == ("arm"):
+            
+            usc.initialize_serial()
+            
+            arm_seq = "1000110012341234"
+            
+            self.ser.write(arm_seq)
+            print(arm_seq)
+            
+               
+        usc.initialize_serial()
+        
+        #self.ser.write(m_input)
+            
+            
+        time.sleep(0.2)  # Give the client some time to repons
+            
+        while self.ser.inWaiting() > 0:
+            out += self.ser.read()
 
+        # Print put what was entered in the terminal
+        #if out != '':
+        print(">>" + out)
+            
 
 
 
 if __name__ == '__main__':
     #arm_seq = "0:1100:0:0"
     usc = uas_serial_controller()
-    #m_input = raw_input(">> ")
-    #if m_input == ("arm"):
-     #   usc.initialize_serial()
-      #  usc.writeOut(arm_seq)
-            
-    #array = [1.1,2.2,3.3,4.4,5.5]
-    #susc.make_string(array)
+    #usc.arm_device()
+    #usc.testConnection()
+        
     try:
         rospy.spin()
     except KeyboardInterrupt:

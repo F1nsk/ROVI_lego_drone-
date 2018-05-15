@@ -11,7 +11,7 @@ import cv2
 import numpy
 from matplotlib import pyplot as plt
 
-pathToCam = "/dev/video1"
+pathToCam = "/dev/video0"
 VERBOSE = True
 #tmp ='/home/finsk/catkin_ws/src/ROVI_lego_drone-/movies/first.mov'
 #cap = cv2.VideoCapture(tmp)

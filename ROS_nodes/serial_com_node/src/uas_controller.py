@@ -18,7 +18,7 @@ class uas_serial_controller:
     def __init__(self):
         self.myStr = str
         self.ser = serial.Serial(
-            port='/dev/ttyUSB0',
+            port='/dev/ttyUSB1',
             baudrate=115200,
             parity=serial.PARITY_ODD,
             stopbits=serial.STOPBITS_TWO,
@@ -32,7 +32,7 @@ class uas_serial_controller:
         rospy.Subscriber('cmd_msg_to_serial',Float64MultiArray,self.callback,queue_size=1)
 	    
     def callback(self,data):
-        print('recieved msg')
+        #print('recieved msg')
         myData = data.data
         if self.arm_flag == False:
             print('False flag')
@@ -48,6 +48,7 @@ class uas_serial_controller:
         if m_input == ("arm"):
             self.initialize_serial()
             self.writeOut(self.arm_seq)
+            time.sleep(2)
             self.arm_flag=True
         
         
@@ -59,7 +60,9 @@ class uas_serial_controller:
         for x in range(end):
             tmp = array[x]
             intList[x]=int(tmp)
-        print(intList)
+        #print('******************\n')
+        print('in: ',intList)
+        #print('******************\n')
         throttle    = str(intList[0])
         rudder      = str(intList[1])
         roll        = str(intList[2])
@@ -68,7 +71,14 @@ class uas_serial_controller:
 
         ##### Sends the characters to the arduino
         # prepare one string for sending
-
+        while len(throttle) < 4:
+            throttle = "0"+throttle
+        while len(rudder) < 4:
+            rudder = "0"+rudder
+        while len(roll) < 4:
+            roll = "0"+roll
+        while len(pitch) < 4:
+            pitch = "0"+pitch
         self.myStr = throttle
         #self.myStr += delim
         self.myStr += rudder
@@ -76,12 +86,12 @@ class uas_serial_controller:
         self.myStr += roll
         #self.myStr += delim
         self.myStr += pitch
-
+        print('str ',self.myStr)
         self.ser.write(self.myStr)
         
         out = ''
 
-        time.sleep(0.1)  # Give the client some time to repons
+        time.sleep(0.2)  # Give the client some time to repons
 
         while self.ser.inWaiting() > 0:
             out += self.ser.read(1)
@@ -109,15 +119,14 @@ class uas_serial_controller:
             
             usc.initialize_serial()
             
-            arm_seq = "1000110012341234"
+            arm_seq = "11401860000000000"
             
             self.ser.write(arm_seq)
             print(arm_seq)
-            
                
         usc.initialize_serial()
         
-        #self.ser.write(m_input)
+        self.ser.write(m_input)
             
             
         time.sleep(0.2)  # Give the client some time to repons
@@ -136,8 +145,10 @@ if __name__ == '__main__':
     #arm_seq = "0:1100:0:0"
     usc = uas_serial_controller()
     #usc.arm_device()
-    #usc.testConnection()
-        
+    """
+    while True:
+        usc.testConnection()
+   """ 
     try:
         rospy.spin()
     except KeyboardInterrupt:

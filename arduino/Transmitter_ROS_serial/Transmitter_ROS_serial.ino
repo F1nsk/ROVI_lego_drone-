@@ -175,8 +175,8 @@ void throttle(float value)
 
  float temp = value;  
 
-  //ppm[0] = temp*700/1023 + 1150 -10; // throttle 
- ppm[0]=temp;
+ ppm[0] = temp*700/1023 + 1150 -10; // throttle 
+ //ppm[0]=temp;
   
 }
 
@@ -186,8 +186,8 @@ void aileron(float value)
 {
 
  float temp = value;  
- ppm[1]=temp;
-    //ppm[1] =  temp*700/1023 + 1150; // roll (aileron)
+ //ppm[1]=temp;
+ ppm[1] =  temp*700/1023 + 1150; // roll (aileron)
  
   
 }
@@ -198,8 +198,8 @@ void pitch(float value)
 {
 
  float temp = value;  
- ppm[2]=temp;
- //ppm[2] = temp*700/1023 + 1150; // pitch (elevator)
+ //ppm[2]=temp;
+ ppm[2] = temp*700/1023 + 1150; // pitch (elevator)
  
   
 }
@@ -209,8 +209,8 @@ void rudder(float value)
 {
 
  float temp = value;
- ppm[3]=temp;  
-  //ppm[3] = temp*700/1023 + 1150; // yaw (rudder)
+ //ppm[3]=temp;  
+ ppm[3] = temp*700/1023 + 1150; // yaw (rudder)
 
  //Serial.print("r-temp = "); Serial.println(temp); 
 }
@@ -387,9 +387,10 @@ int tmp[input.length()];
 
 
 for(int i = 0; i<input.length();i++){
-
-//Serial.print("\n");
-//Serial.print(input[i]);
+/*
+Serial.print("\n");
+Serial.print(input[i]);
+*/
   if(i < 16 ){
     
     tmp[i] = input[i]-48;
@@ -400,12 +401,26 @@ for(int i = 0; i<input.length();i++){
     if(input[i] == -77){
       tmp[i]=input[i]+80;
     }
+    if(input[i] == -75){
+      tmp[i]=input[i]+80;
+    }
+    if(input[i] == -75){
+      tmp[i]=input[i]+80;
+    }
+    if(input[i] == -74){
+    tmp[i]=input[i]+80;
+    }
+    if(input[i] == -71){
+    tmp[i]=input[i]+80;
+    }
     /*
     Serial.print(" = ASCII = ");
-    Serial.print(tmp[0]);
+    Serial.print(tmp[i]);
     */
+    
   }
 }
+Serial.print("\n");
 /*
 Serial.print("Next\n");
 Serial.print(tmp[0]);
@@ -450,10 +465,10 @@ Serial.println(fourthValue);
 
 */
 
-int rudderVal ; 
-int aileronVal ; 
-int pitchVal ;
-int throttleVal;
+int rudderVal = 0 ; 
+int aileronVal = 0; 
+int pitchVal = 0;
+int throttleVal = 0;
 throttleVal += tmp[0]*1000;
 throttleVal += tmp[1]*100;
 throttleVal += tmp[2]*10;
@@ -487,11 +502,11 @@ Serial.println(pitchVal);
 
 
 
-/*
+
 // keep values from returning to zero . 
 if( throttleVal >= 0  )
 {
-  //throttle(throttleVal); 
+  throttle(throttleVal); 
 }
 else 
 {
@@ -502,7 +517,7 @@ else
 
 if( aileronVal >= 0  )
 {
-  //aileron(aileronVal); 
+  aileron(aileronVal); 
 }
 else 
 {
@@ -513,7 +528,7 @@ else
 
 if( pitchVal >= 0  )
 {
-  //pitch(pitchVal); 
+  pitch(pitchVal); 
 }
 else 
 {
@@ -525,7 +540,7 @@ else
 
 if( rudderVal >= 0  )
 {
-  //rudder(rudderVal); 
+  rudder(rudderVal); 
 }
 else 
 {
@@ -533,18 +548,19 @@ else
   
 }
 
-*/
+
 autoQuadArming(throttleVal, rudderVal);
+/*
 ppm[0]= throttleVal;
 ppm[1]= aileronVal;
 ppm[2]= pitchVal;
 ppm[3]= rudderVal;
+*/
 
-
-Serial.print("throttle = "); Serial.print(throttleVal);// Serial.print("  "); Serial.println(ppm[0]); 
-Serial.print("yaw =      "); Serial.print(rudderVal); //Serial.print("  "); Serial.println(ppm[3]); 
-Serial.print("pitch =    "); Serial.print(pitchVal);//Serial.print("  "); Serial.println(ppm[2]); 
-Serial.print("roll =     "); Serial.print(aileronVal);//Serial.print("  "); Serial.println(ppm[1]); 
+Serial.print("throttle = "); Serial.print(throttleVal); Serial.print("  "); Serial.println(ppm[0]); 
+Serial.print("yaw =      "); Serial.print(rudderVal); Serial.print("  "); Serial.println(ppm[3]); 
+Serial.print("pitch =    "); Serial.print(pitchVal);Serial.print("  "); Serial.println(ppm[2]); 
+Serial.print("roll =     "); Serial.print(aileronVal);Serial.print("  "); Serial.println(ppm[1]); 
 
 }
 

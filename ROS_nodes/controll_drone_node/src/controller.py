@@ -26,8 +26,8 @@ class  Controller:
         self.valid = False
         self.yImageOffset = 240
         self.xImageOffset = 320
-        self.pidVer = PID(0.0006, 0.001, 0)
-        self.pidHor = PID(0.004, 0.0001, 0)
+        self.pidVer = PID(0.01, 0.000, 0)
+        self.pidHor = PID(0.002, 0.000, 0)
         
         self.pidDist = PID(0.006, 0.0001, 0) 
         
@@ -40,14 +40,15 @@ class  Controller:
 
 
 
-<<<<<<< HEAD
+#<<<<<<< HEAD
     def init_drone_parameters(self):  # initiates the values, we are using raw ppm values 
 
-        self.thrVal = 1170 #lowest  values we can send 
-        self.rollVal = 1500 # middel point 
-        self.pitchVal = 1500 # dito 
-        self.yawVal =  1500 #dito 
-=======
+        self.thrVal = 700 #lowest  values we can send 
+        self.rollVal = 511 # middel point 
+        self.pitchVal = 511 # dito 
+        self.yawVal =  511 #dito 
+#=======
+    """
     def init_drone_parameters(self):  # needs values
         print('init')
         self.thrVal = 200
@@ -55,18 +56,19 @@ class  Controller:
         self.pitchVal = 500
         self.yawVal =  370
 >>>>>>> e0d5b6f46ca9b5dd3611b22c95c490cbb7a4bc21
-
+    """
 
 
 
     def callback_TMP(self, data):
         #print('recieved data')
-        #self.recenter_x()
+        self.recenter_x()
         self.recenter_y()
         
         #self.rotate_drone()
         
         #self.change_dist_to_marker()
+        self.catcher()
 
         self.dummy = data.data
 
@@ -100,21 +102,21 @@ class  Controller:
 
 
     def recenter_y(self):
-
-        if  self.yPosCentered < 0:
+        if  self.yPosCentered < -25:
+            
             print('below 0')
-            self.thrVal += self.pidVer(self.yPosCentered)
-        if 	self.yPosCentered > 0:
+            self.thrVal -= self.pidVer(self.yPosCentered)
+        if 	self.yPosCentered > 25:
             print('above 0')
-            self.thrVal += self.pidVer(self.yPosCentered)
+            self.thrVal -= self.pidVer(self.yPosCentered)
        
 
     def recenter_x(self):
 
-        if self.xPosCentered < 0:
+        if self.xPosCentered < -50:
             print('below 0')
             self.rollVal += self.pidHor(self.xPosCentered)
-        if self.xPosCentered > 0:
+        if self.xPosCentered > 50:
             print('above 0')
             self.rollVal += self.pidHor(self.xPosCentered)
         
@@ -136,7 +138,17 @@ class  Controller:
         if self.rotOne < 0:
             self.pitchVal += self.pidDist(self.rotOne)
         
-
+    def catcher(self):
+        if self.rollVal < 400:
+            self.rollVal = 400 
+        if self.rollVal > 700:
+            self.rollVal = 700    
+        if self.yawVal < 0:
+            self.yawVal = 0
+        if self.pitchVal < 0:
+            self.pitchVal= 0
+        if self.thrVal < 0:
+            self.thrVal = 0
 
 
 

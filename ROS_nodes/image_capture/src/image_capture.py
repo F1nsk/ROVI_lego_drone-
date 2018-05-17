@@ -24,9 +24,9 @@ def main():
     while True :
         ret, frame = cam.read()
         
-        frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        pub(frame_gray)
-        height, width = frame_gray.shape[:2]
+        #frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        pub(frame)
+        height, width = frame.shape[:2]
         print('(H,W)',height,width)
         if VERBOSE == True:    
           #  cv2.imshow('feed',frame)
@@ -41,7 +41,7 @@ def main():
 
 def pub(img):
     bridge = CvBridge()
-    msg = bridge.cv2_to_imgmsg(img,encoding="8UC1")
+    msg = bridge.cv2_to_imgmsg(img,encoding="8UC3")
     img_pub = rospy.Publisher('camera/raw',Image,queue_size=1)
     img_pub.publish(msg)
 

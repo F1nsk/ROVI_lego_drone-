@@ -18,7 +18,7 @@ class uas_serial_controller:
     def __init__(self):
         self.myStr = str
         self.ser = serial.Serial(
-            port='/dev/ttyUSB1',
+            port='/dev/ttyUSB3',
             baudrate=115200,
             parity=serial.PARITY_ODD,
             stopbits=serial.STOPBITS_TWO,
@@ -145,10 +145,10 @@ if __name__ == '__main__':
     #arm_seq = "0:1100:0:0"
     usc = uas_serial_controller()
     #usc.arm_device()
-    """
-    while True:
-        usc.testConnection()
-   """ 
+    
+    #while True:
+     #   usc.testConnection()
+    
     try:
         rospy.spin()
     except KeyboardInterrupt:

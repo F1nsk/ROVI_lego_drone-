@@ -64,11 +64,11 @@ def callback(img):
     accepted = 0
     if ids != None:
         accepted = 1
-        rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners, 1000, camera_matrix, dist_coeffs)
+        rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners, 20, camera_matrix, dist_coeffs)
 
         for i in range (len(rvec)):
             print("Found marker!")
-            showImg = aruco.drawAxis(img, camera_matrix, dist_coeffs, rvec[i], tvec[i], 200)
+            showImg = aruco.drawAxis(img, camera_matrix, dist_coeffs, rvec[i], tvec[i], 10)
             cv2.imshow("Hello", showImg)
             cv2.waitKey(1)
 
@@ -77,12 +77,16 @@ def callback(img):
             angles = rotationMatrixToEulerAngles(r[0])
             angles = angles / 3.14 * 180
 
-            rotation1 = angles[2]
-            rotation2 = angles[1]
-            mid = (corners[0][0][0] + corners[0][0][2]) / 2
+            roll = angles[2]
+            yaw = angles[1]
+            pitch = angles[0]
+            #mid = (corners[0][0][0] + corners[0][0][2]) / 2
+            xDist = (tvec[0][i][0])
+            yDist = (tvec[0][i][1])
             dist = tvec[0][i][2]
 
-            mydata = [mid[0], mid[1], rotation1, rotation2, dist, accepted]
+
+            mydata = [xDist, yDist, yaw, roll, pitch, dist, accepted]
             myPubArray = Float64MultiArray(data=mydata)
             pub(myPubArray)
 

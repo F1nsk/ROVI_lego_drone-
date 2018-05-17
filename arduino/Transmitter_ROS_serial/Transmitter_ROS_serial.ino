@@ -316,54 +316,6 @@ void autoQuadArming(int throttle, int rudder)
 //  
 //}
 
-/****************************************************************************/
-void serial() // formate TTTTRRRRPPPPYYYY 
-{
-  
-  String input = ""; 
-  input = Serial.readStringUntil("\n"); 
-
-  thrVal += (input[0]-48)*1000; 
-  thrVal += (input[1]-48)*100; 
-  thrVal += (input[2]-48)*10; 
-  thrVal += (input[3]-48); 
-  rollVal += (input[4]-48)*1000; 
-  rollVal += (input[5]-48)*100; 
-  rollVal += (input[6]-48)*10; 
-  rollVal += (input[7]-48); 
-  pitchVal += (input[8]-48)*1000; 
-  pitchVal += (input[9]-48)*100; 
-  pitchVal += (input[10]-48)*10; 
-  pitchVal += (input[11]-48); 
-  yawVal += (input[8]-48)*1000; 
-  yawVal += (input[9]-48)*100; 
-  yawVal += (input[10]-48)*10; 
-  yawVal += (input[11]-48); 
-
-
-  ppm[0] = thrVal; 
-  ppm[1] = rollVal; 
-  ppm[2] = pitchVal; 
-  ppm[3] = yawVal; 
-
-  thrVal = 0; 
-  rollVal = 0; 
-  pitchVal = 0; 
-  yawVal = 0; 
-
-  Serial.print("throttle = "); Serial.println(ppm[0]);
-
- Serial.print("rudder = "); Serial.println(ppm[1]); 
- Serial.print("aileron = "); Serial.println(ppm[2] ); 
- Serial.print("pitch = "); Serial.println(ppm[3]); 
-
-   
- 
-    
-
-  
-}
-
 
 /****************************************************************************/
 void messageReading()

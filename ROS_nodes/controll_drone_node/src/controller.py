@@ -6,6 +6,7 @@ from geometry_msgs.msg import Vector3
 import math
 import time
 from pid_controller.pid import PID
+from std_msgs.msg import String
 
 class  Controller:
 
@@ -23,19 +24,26 @@ class  Controller:
         self.yPosCentered = 0 # dito
         self.rotOne = 0 # rotation around z axsis
         self.rotTwo = 0 # ratation around y axsis
+        self.rot_pitch = 0 # ratation around x axsis
+        self.distance = 0
         self.valid = False
-        self.yImageOffset = 240
-        self.xImageOffset = 320
-        self.pidVer = PID(0.01, 0.000, 0)
-        self.pidHor = PID(0.002, 0.000, 0)
+        self.yImageOffset = 0 #240
+        self.xImageOffset = 0 #320
+        self.pid_throttle = PID(0.05, 0.0015, 0.00001)
+        self.pid_roll = PID(0.002, 0.0001, 0.0)
+        #self.pid_roll = PID(0.00, 0.0000, 0.0)
+        self.pid_pitch = PID(0.002, 0.0, 0.00)
         
         self.pidDist = PID(0.006, 0.0001, 0) 
         
-        self.pidRot = PID(0.006,0.001, 0) 
+        self.pidRot = PID(0.006,0.001, 0)
 
+        self.pid_p_val = 0.0
+        self.pid_i_val = 0.0
+        self.pid_d_val = 0.0
 
-
-        self.rosMsg =  rospy.Subscriber('ArUco/data_array' ,Float64MultiArray , self.callback_TMP ,queue_size=1) # Subscriber for data to calculate
+        self.rosMsg = rospy.Subscriber('ArUco/data_array', Float64MultiArray, self.callback_TMP, queue_size=1) # Subscriber for data to calculate
+        self.pidMsg = rospy.Subscriber('PID_controls', String, self.callback_PID, queue_size=1) # Subscriber for data to calculate
 
 
 
@@ -43,9 +51,9 @@ class  Controller:
 #<<<<<<< HEAD
     def init_drone_parameters(self):  # initiates the values, we are using raw ppm values 
 
-        self.thrVal = 700 #lowest  values we can send 
-        self.rollVal = 511 # middel point 
-        self.pitchVal = 511 # dito 
+        self.thrVal = 500 #lowest  values we can send
+        self.rollVal = 520 # middel point
+        self.pitchVal = 570 #dito
         self.yawVal =  511 #dito 
 #=======
     """
@@ -58,16 +66,35 @@ class  Controller:
 >>>>>>> e0d5b6f46ca9b5dd3611b22c95c490cbb7a4bc21
     """
 
+    def callback_PID(self, data):
+
+        if data.data == "q":
+            self.pid_p_val -= 0.01
+        if data.data == "w":
+            self.pid_p_val += 0.01
+        if data.data == "a":
+            self.pid_i_val -= 0.001
+        if data.data == "s":
+            self.pid_i_val += 0.001
+        if data.data == "z":
+            self.pid_d_val -= 0.01
+        if data.data == "x":
+            self.pid_d_val += 0.01
+
+        self.pid_roll = PID(self.pid_p_val, self.pid_i_val, self.pid_d_val)
+        print("PID: ", self.pid_p_val, " ", self.pid_i_val, " ", self.pid_d_val)
 
 
     def callback_TMP(self, data):
         #print('recieved data')
         self.recenter_x()
         self.recenter_y()
+        self.recenter_z()
         
         #self.rotate_drone()
         
         #self.change_dist_to_marker()
+
         self.catcher()
 
         self.dummy = data.data
@@ -79,11 +106,24 @@ class  Controller:
 
         self.rotOne = self.dummy[2]
         self.rotTwo = self.dummy[3]
-        self.valid = self.dummy[5]
+        self.rot_pitch = self.dummy[4]
+        self.distance = self.dummy[5]
+        self.valid = self.dummy[6]
+
+        if self.rot_pitch < 0:
+            self.rot_pitch = self.rot_pitch + 180
+        else:
+            self.rot_pitch = self.rot_pitch - 180
+
 
         print('xPos', self.xPosCentered)
         print('yPos', self.yPosCentered)
-        
+        print('rot_pitch:', self.rot_pitch)
+        print("distance",self.distance)
+
+        #self.thrVal = 800
+
+        print("Thr : Yaw : Roll : \tPitch")
         array = [self.thrVal ,self.yawVal ,self.rollVal ,self.pitchVal]
         print(array)
         
@@ -98,33 +138,41 @@ class  Controller:
         self.thrVal = 770
         self.rollVal = 500
         self.pitchVal = 500
-        self.yawVal =  370
+        self.yawVal = 370
 
 
     def recenter_y(self):
-        if  self.yPosCentered < -25:
-            
-            print('below 0')
-            self.thrVal -= self.pidVer(self.yPosCentered)
-        if 	self.yPosCentered > 25:
-            print('above 0')
-            self.thrVal -= self.pidVer(self.yPosCentered)
+        if  self.yPosCentered < -1:
+            #print('below 0')
+            self.thrVal -= self.pid_throttle(self.yPosCentered)
+        if 	self.yPosCentered > 1:
+            #print('above 0')
+            self.thrVal -= self.pid_throttle(self.yPosCentered)
        
 
     def recenter_x(self):
+        if self.rollVal >= 450 and self.rollVal <= 560:
+            if self.xPosCentered < -5:
+                print('\troll right')
+                self.rollVal += self.pid_roll(self.xPosCentered)
+            if self.xPosCentered > 5:
+                print('\troll left ')
+                self.rollVal += self.pid_roll(self.xPosCentered)
 
-        if self.xPosCentered < -50:
-            print('below 0')
-            self.rollVal += self.pidHor(self.xPosCentered)
-        if self.xPosCentered > 50:
-            print('above 0')
-            self.rollVal += self.pidHor(self.xPosCentered)
-        
+    def recenter_z(self):
+        if self.distance >= 50 and self.rollVal <= 35:
+            if self.distance < 50:
+                print('\tpitch backward')
+                self.pitchVal += self.pid_pitch(self.distance-55)
+            if self.distance > 100:
+                print('\tpitch forward')
+                self.pitchVal += self.pid_pitch(self.distance-105)
+
 
     def rotate_drone(self):
 
         if self.rotTwo > 0:
-            self.yawVal  += self.pidRot(self.rotOne)
+            self.yawVal += self.pidRot(self.rotOne)
             self.rollVal -= self.pidRot(self.rotOne)
         if self.rotTwo < 0:
             self.yawVal += self.pidRot(self.rotOne)
@@ -139,16 +187,23 @@ class  Controller:
             self.pitchVal += self.pidDist(self.rotOne)
         
     def catcher(self):
-        if self.rollVal < 400:
-            self.rollVal = 400 
-        if self.rollVal > 700:
-            self.rollVal = 700    
+        if self.rollVal < 450:
+            self.rollVal = 450
+        if self.rollVal > 560:
+            self.rollVal = 560
+
         if self.yawVal < 0:
             self.yawVal = 0
-        if self.pitchVal < 0:
-            self.pitchVal= 0
+
         if self.thrVal < 0:
             self.thrVal = 0
+        if self.thrVal > 1100:
+            self.thrVal = 1100
+
+        if self.pitchVal > 600:
+            self.pitchVal = 600
+        if self.pitchVal < 400:
+            self.pitchVal = 400
 
 
 
@@ -157,8 +212,11 @@ if __name__ == '__main__':
     rospy.init_node('control_node', anonymous = False)
     control =  Controller()
     control.init_drone_parameters()
+    print("test")
+
     try:
         rospy.spin()
+
     except KeyboardInterrupt:
         print("Shutting down")
 

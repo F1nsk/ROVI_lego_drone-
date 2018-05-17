@@ -18,7 +18,7 @@ class uas_serial_controller:
     def __init__(self):
         self.myStr = str
         self.ser = serial.Serial(
-            port='/dev/ttyUSB3',
+            port='/dev/ttyUSB1',
             baudrate=115200,
             parity=serial.PARITY_ODD,
             stopbits=serial.STOPBITS_TWO,

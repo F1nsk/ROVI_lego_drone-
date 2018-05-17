@@ -69,7 +69,7 @@ def callback(img):
         for i in range (len(rvec)):
             print("Found marker!")
             showImg = aruco.drawAxis(img, camera_matrix, dist_coeffs, rvec[i], tvec[i], 10)
-            cv2.imshow("Hello", showImg)
+            cv2.imshow("Hello my little friends", showImg)
             cv2.waitKey(1)
 
 

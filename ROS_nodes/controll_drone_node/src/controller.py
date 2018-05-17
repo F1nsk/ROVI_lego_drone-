@@ -29,10 +29,11 @@ class  Controller:
         self.valid = False
         self.yImageOffset = 0 #240
         self.xImageOffset = 0 #320
-        self.pid_throttle = PID(0.05, 0.0015, 0.00001)
-        self.pid_roll = PID(0.002, 0.0001, 0.0)
+        self.pid_throttle = PID(0.04, 0.0015, 0.001)
+        self.pid_roll = PID(0.04, 0.001, 0.0)
+        self.pid_yaw = PID(0.00001, 0.0001, 0.0)
         #self.pid_roll = PID(0.00, 0.0000, 0.0)
-        self.pid_pitch = PID(0.002, 0.0, 0.00)
+        self.pid_pitch = PID(0.02, 0.0, 0.05)
         
         self.pidDist = PID(0.006, 0.0001, 0) 
         
@@ -53,7 +54,7 @@ class  Controller:
 
         self.thrVal = 500 #lowest  values we can send
         self.rollVal = 520 # middel point
-        self.pitchVal = 570 #dito
+        self.pitchVal = 550 #dito
         self.yawVal =  511 #dito 
 #=======
     """
@@ -142,31 +143,33 @@ class  Controller:
 
 
     def recenter_y(self):
-        if  self.yPosCentered < -1:
+        if  self.yPosCentered < -5:
             #print('below 0')
             self.thrVal -= self.pid_throttle(self.yPosCentered)
-        if 	self.yPosCentered > 1:
+        if 	self.yPosCentered > 5:
             #print('above 0')
             self.thrVal -= self.pid_throttle(self.yPosCentered)
        
 
     def recenter_x(self):
-        if self.rollVal >= 450 and self.rollVal <= 560:
-            if self.xPosCentered < -5:
+        if self.xPosCentered >= 3 or self.xPosCentered <= -3:
+            if self.xPosCentered < -3:
                 print('\troll right')
                 self.rollVal += self.pid_roll(self.xPosCentered)
-            if self.xPosCentered > 5:
+                self.yawVal += self.pid_yaw(self.xPosCentered)
+            if self.xPosCentered > 3:
                 print('\troll left ')
                 self.rollVal += self.pid_roll(self.xPosCentered)
+                self.yawVal += self.pid_yaw(self.xPosCentered)
 
     def recenter_z(self):
-        if self.distance >= 50 and self.rollVal <= 35:
-            if self.distance < 50:
+        if self.distance >= 45 or self.distance <= 40:
+            if self.distance < 40:
                 print('\tpitch backward')
-                self.pitchVal += self.pid_pitch(self.distance-55)
-            if self.distance > 100:
+                self.pitchVal += self.pid_pitch(self.distance-40)
+            if self.distance > 45:
                 print('\tpitch forward')
-                self.pitchVal += self.pid_pitch(self.distance-105)
+                self.pitchVal += self.pid_pitch(self.distance-45)
 
 
     def rotate_drone(self):
@@ -192,18 +195,20 @@ class  Controller:
         if self.rollVal > 560:
             self.rollVal = 560
 
-        if self.yawVal < 0:
-            self.yawVal = 0
+        if self.yawVal < 450:
+            self.yawVal = 450
+        if self.yawVal > 560:
+            self.yawVal = 560
 
         if self.thrVal < 0:
             self.thrVal = 0
         if self.thrVal > 1100:
             self.thrVal = 1100
 
-        if self.pitchVal > 600:
-            self.pitchVal = 600
-        if self.pitchVal < 400:
-            self.pitchVal = 400
+        if self.pitchVal < 450:
+            self.pitchVal = 450
+        if self.pitchVal > 560:
+            self.pitchVal = 560
 
 
 
